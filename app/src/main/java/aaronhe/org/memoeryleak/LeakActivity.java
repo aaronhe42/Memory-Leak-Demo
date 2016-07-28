@@ -1,0 +1,37 @@
+/*
+ * © 2013 - 2016 Tinder, Inc., ALL RIGHTS RESERVED
+ */
+package aaronhe.org.memoeryleak;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import java.util.concurrent.TimeUnit;
+import rx.Observable;
+import rx.functions.Action1;
+
+public class LeakActivity extends AppCompatActivity {
+
+  public static Intent newIntent(Context context) {
+    return new Intent(context, LeakActivity.class);
+  }
+
+  private static final String TAG = LeakActivity.class.getSimpleName();
+
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+
+    Observable.interval(100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+      @Override public void call(Long value) {
+        Log.d(TAG, "Got value: " + value);
+      }
+    });
+  }
+}
