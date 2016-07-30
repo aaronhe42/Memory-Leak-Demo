@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class LeakActivity extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class LeakActivity extends AppCompatActivity {
   }
 
   private static final String TAG = LeakActivity.class.getSimpleName();
-
+  private Subscription subscription;
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
   }
@@ -28,10 +29,17 @@ public class LeakActivity extends AppCompatActivity {
   @Override protected void onResume() {
     super.onResume();
 
-    Observable.interval(100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
-      @Override public void call(Long value) {
-        Log.d(TAG, "Got value: " + value);
-      }
-    });
+    subscription =
+        Observable.interval(100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+          @Override public void call(Long value) {
+            Log.d(TAG, "Got value: " + value);
+          }
+        });
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+
+    //subscription.unsubscribe();
   }
 }

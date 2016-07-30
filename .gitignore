@@ -2,6 +2,7 @@
 .idea
 *.iml
 annotations
+captures
 
 # Gradle
 .gradle
